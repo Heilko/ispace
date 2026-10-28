@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Aníbal Figueredo, candidate for the ispace internship in Tokyo from February 2027.">
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>Aníbal's Mission File</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<noscript><style>.launch{display:none!important} body{overflow:auto!important} .file{visibility:visible!important}</style></noscript>
+<style>
+/* Layout: a launch pad that gives way to a flight dossier. A real 3D Moon (NASA LRO maps) sits fixed on the right; the file scrolls over it on the left and the sun moves with the scroll. Single dark world by design. */
+:root {
+  color-scheme: dark;
+  --void: #04060B;
+  --ink: #E6E8EE;
+  --muted: #9AA3B5;
+  --rule: rgba(230, 232, 238, 0.14);
+  --sun: #F2C879;        /* sunlight on regolith */
+  --flame: #FF8A3D;
+  --panel: rgba(9, 12, 21, 0.66);
+  --display: "Bricolage Grotesque", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  --body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--void); color: var(--ink); font-family: var(--body); font-size: 18px; line-height: 1.6; overflow: hidden; }
+body.launched { overflow: auto; }
+a { color: inherit; text-decoration-color: var(--sun); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--sun); outline-offset: 3px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+.label { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+
+/* Space layers */
+#space { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
+.veil { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0; transition: opacity 1.6s ease;
+  background: linear-gradient(90deg, rgba(4,6,11,.94) 0%, rgba(4,6,11,.80) 42%, rgba(4,6,11,.15) 72%, rgba(4,6,11,0) 100%); }
+body.launched .veil { opacity: 1; }
+.fallback-moon { position: fixed; z-index: 0; right: 6vw; top: 50%; width: min(56vw, 640px); aspect-ratio: 1; transform: translateY(-50%); border-radius: 50%;
+  background: radial-gradient(circle at 62% 40%, #d9d5cc 0%, #9c988f 45%, #3b3d44 75%, #0d0f15 100%); box-shadow: 0 0 120px rgba(242,200,121,.08); }
+
+/* Launch pad */
+.launch { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; overflow: hidden;
+  background: radial-gradient(120% 60% at 50% 115%, rgba(255,138,61,.22) 0%, rgba(4,6,11,0) 60%), rgba(4,6,11,.35);
+  transition: opacity 1s ease; }
+.launch.gone { opacity: 0; pointer-events: none; }
+#fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.pad-top { position: absolute; top: calc(env(safe-area-inset-top, 0px) + 22px); left: max(20px, env(safe-area-inset-left, 0px)); right: max(20px, env(safe-area-inset-right, 0px)); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.pad-bottom { position: absolute; bottom: calc(env(safe-area-inset-bottom, 0px) + 22px); left: 0; right: 0; text-align: center; padding-inline: 16px; }
+.ground { position: absolute; left: 0; right: 0; bottom: 0; height: 17vh; background: linear-gradient(180deg, rgba(20,24,34,0) 0%, #0b0e16 30%, #07090f 100%); border-top: 1px solid var(--rule); }
+.tower { position: absolute; bottom: 17vh; left: calc(50% - 118px); width: 46px; height: 250px; opacity: .55; }
+.rocket { position: absolute; left: 50%; bottom: calc(17vh - 6px); transform: translateX(-50%); background: none; border: 0; padding: 0; cursor: pointer; width: 120px; height: 300px; will-change: transform; }
+.rocket svg { width: 100%; height: 100%; overflow: visible; display: block; }
+.rocket:hover .body-shell { filter: drop-shadow(0 0 14px rgba(242,200,121,.35)); }
+.ignite .rocket-inner { animation: shake .09s linear infinite; }
+.lift .rocket-inner { animation: shake .14s linear infinite; }
+@keyframes shake { 0%{transform:translate(0,0)} 25%{transform:translate(-1.4px,.6px)} 50%{transform:translate(1.2px,-.5px)} 75%{transform:translate(-.6px,-.8px)} 100%{transform:translate(0,0)} }
+.flame { --fs: 0; transform-box: fill-box; transform-origin: 50% 0; transform: scaleY(0); }
+.ignite .flame { --fs: .55; animation: flick .08s linear infinite alternate; }
+.lift .flame { --fs: 1.35; }
+@keyframes flick { from { transform: scaleY(var(--fs)) scaleX(1); } to { transform: scaleY(calc(var(--fs) * .8)) scaleX(.9); } }
+.cta { font-family: var(--mono); font-size: 13px; letter-spacing: .2em; text-transform: uppercase; color: var(--sun); animation: breathe 2.4s ease-in-out infinite; }
+.ignite .cta { visibility: hidden; }
+@keyframes breathe { 50% { opacity: .45; } }
+.count { position: absolute; top: 24vh; left: 0; right: 0; text-align: center; font-family: var(--display); font-weight: 800; font-size: clamp(64px, 14vw, 150px); line-height: 1; color: var(--ink); opacity: 0; letter-spacing: -.03em; }
+.count.pop { animation: pop .6s ease-out; }
+@keyframes pop { 0% { opacity: 0; transform: scale(1.4); } 25% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(.92); } }
+.skip { background: none; border: 0; color: var(--muted); font: inherit; cursor: pointer; padding: 0; text-decoration: underline; text-underline-offset: 3px; }
+
+/* HUD */
+.hud { position: fixed; top: 0; left: 0; right: 0; z-index: 10; display: flex; align-items: center; gap: 8px 22px; flex-wrap: wrap;
+  padding: calc(env(safe-area-inset-top, 0px) + 12px) max(16px, env(safe-area-inset-right, 0px)) 12px max(16px, env(safe-area-inset-left, 0px));
+  background: linear-gradient(180deg, rgba(4,6,11,.92), rgba(4,6,11,0)); font-family: var(--mono); font-size: 12px; letter-spacing: .08em; color: var(--muted);
+  opacity: 0; transform: translateY(-8px); transition: opacity .8s ease 1.4s, transform .8s ease 1.4s; pointer-events: none; }
+body.launched .hud { opacity: 1; transform: none; pointer-events: auto; }
+.hud b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+.hud .grow { flex: 1; }
+.hud button { font: inherit; letter-spacing: inherit; color: var(--void); background: var(--sun); border: 0; border-radius: 3px; padding: 6px 10px; cursor: pointer; }
+.hud button[aria-pressed="true"] { background: var(--ink); }
+
+/* File */
+body:not(.launched) .file { visibility: hidden; }
+.file { position: relative; z-index: 2; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.col { max-width: 640px; margin-left: max(0px, calc((100vw - 1180px) / 2)); padding-block: 120px 80px; display: grid; gap: 88px; }
+body.launched .rise { animation: rise 1s cubic-bezier(.2,.7,.2,1) both; }
+body.launched .rise.d1 { animation-delay: 1.1s; } body.launched .rise.d2 { animation-delay: 1.3s; } body.launched .rise.d3 { animation-delay: 1.5s; }
+@keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+
+.hero h1 { font-size: clamp(52px, 9vw, 104px); font-weight: 800; line-height: .92; letter-spacing: -.035em; margin-top: 16px; }
+.hero h1 span { color: var(--sun); }
+.lede { font-size: clamp(20px, 2.3vw, 24px); max-width: 32ch; margin: 24px 0 0; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 26px; }
+
+.strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.strip div { padding: 18px 14px 18px 0; display: grid; gap: 4px; }
+.strip div + div { padding-left: 14px; border-left: 1px solid var(--rule); }
+.strip b { font-family: var(--display); font-size: clamp(28px, 4vw, 40px); font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
+
+section { display: grid; gap: 18px; }
+section h2 { font-size: clamp(30px, 4vw, 42px); font-weight: 700; letter-spacing: -.015em; }
+.prose { display: grid; gap: 16px; max-width: 60ch; }
+.prose p { margin: 0; }
+
+.arc { width: 100%; height: auto; display: block; margin-top: 6px; }
+.arc path { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+.arc path.next { stroke: var(--sun); stroke-dasharray: 5 6; }
+.arc .dot { fill: var(--void); stroke: var(--ink); stroke-width: 1.5; }
+.arc .dot.next { fill: var(--sun); stroke: var(--sun); }
+.arc .moonmark { fill: #d8d4ca; }
+.arc.draw path:not(.next) { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.6s ease forwards; }
+.arc.draw path:nth-of-type(2) { animation-delay: .5s; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+.traj { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.traj div { display: grid; gap: 2px; }
+.traj h3 { font-size: 22px; }
+.traj small { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.legs { display: flex; flex-wrap: wrap; gap: 6px 24px; font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.legs b { color: var(--ink); font-weight: 500; }
+
+.log { display: grid; }
+.entry { display: grid; gap: 6px; padding: 22px 18px; margin-inline: -18px; border-top: 1px solid var(--rule); border-radius: 4px; transition: background .25s; }
+.entry:last-child { border-bottom: 1px solid var(--rule); }
+.entry:hover { background: var(--panel); }
+.entry .when { font-family: var(--mono); font-size: 12.5px; color: var(--sun); letter-spacing: .08em; }
+.entry h3 { font-size: 24px; font-weight: 700; }
+.entry .org { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+.entry p { margin: 0; }
+.entry .result { font-size: 16px; color: var(--muted); }
+.entry .result strong { color: var(--ink); font-weight: 600; }
+
+.tele { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--rule); }
+.tele div { padding: 16px 16px 16px 0; border-bottom: 1px solid var(--rule); display: grid; gap: 4px; align-content: start; }
+.bar { height: 5px; background: var(--rule); border-radius: 3px; overflow: hidden; margin-top: 6px; max-width: 220px; }
+.bar i { display: block; height: 100%; background: var(--ink); }
+.bar i.grow { background: var(--sun); }
+
+.comms { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip { font-family: var(--mono); font-size: 14px; padding: 10px 14px; border: 1px solid var(--rule); border-radius: 4px; background: var(--panel); display: inline-flex; gap: 10px; align-items: center; text-decoration: none; }
+.chip button { font: inherit; font-size: 12px; color: var(--sun); background: none; border: 0; cursor: pointer; padding: 0; }
+footer { font-family: var(--mono); font-size: 12px; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 18px; display: grid; gap: 10px; }
+footer .row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; align-items: center; }
+footer button { font: inherit; color: var(--sun); background: none; border: 1px solid var(--rule); border-radius: 3px; padding: 6px 10px; cursor: pointer; }
+
+@media (max-width: 760px) {
+  body { font-size: 17px; }
+  .veil { background: linear-gradient(180deg, rgba(4,6,11,.25) 0%, rgba(4,6,11,.78) 38%, rgba(4,6,11,.86) 100%); }
+  .col { padding-block: 46vh 64px; gap: 64px; }
+  .strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .strip div:nth-child(3) { padding-left: 0; border-left: 0; }
+  .strip div:nth-child(n+3) { border-top: 1px solid var(--rule); }
+  .traj { grid-template-columns: 1fr; }
+  .tele { grid-template-columns: 1fr; }
+  .hud .wide { display: none; }
+  .fallback-moon { right: 50%; top: 22vh; width: 70vw; transform: translate(50%, -50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="space" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div>
+
+<div class="launch" id="launch">
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <div class="pad-top">
+    <span class="label">Mission AF-27</span>
+    <span class="label">Madrid launch site · 40.42°N 3.70°W</span>
+  </div>
+  <div class="count" id="count" aria-live="assertive"></div>
+  <div class="ground" aria-hidden="true"></div>
+  <svg class="tower" viewBox="0 0 46 250" aria-hidden="true">
+    <g stroke="#9AA3B5" stroke-width="1.5" fill="none">
+      <path d="M6 250 V10 M40 250 V10 M6 10 H40"/>
+      <path d="M6 30 L40 60 M40 60 L6 90 M6 90 L40 120 M40 120 L6 150 M6 150 L40 180 M40 180 L6 210 M6 210 L40 240"/>
+      <path d="M40 70 H64 M40 150 H64"/>
+    </g>
+  </svg>
+  <button class="rocket" id="rocket" type="button" aria-label="Launch the rocket and open Aníbal's mission file">
+    <svg viewBox="0 0 120 300" aria-hidden="true">
+      <defs>
+        <linearGradient id="hull" x1="0" x2="1">
+          <stop offset="0" stop-color="#9AA3B5"/><stop offset=".45" stop-color="#F4F5F8"/><stop offset="1" stop-color="#B9C0CD"/>
+        </linearGradient>
+        <radialGradient id="fire" cx=".5" cy="0" r="1">
+          <stop offset="0" stop-color="#FFF6D6"/><stop offset=".35" stop-color="#F2C879"/><stop offset=".7" stop-color="#FF8A3D"/><stop offset="1" stop-color="#FF8A3D" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <g class="rocket-inner">
+        <g class="flame"><ellipse cx="60" cy="236" rx="15" ry="58" fill="url(#fire)"/><ellipse cx="60" cy="226" rx="7" ry="26" fill="#FFF6D6"/></g>
+        <g class="body-shell">
+          <path d="M60 8 C78 30 86 62 86 100 V196 H34 V100 C34 62 42 30 60 8 Z" fill="url(#hull)"/>
+          <path d="M60 8 C70 20 76 34 80 50 H40 C44 34 50 20 60 8 Z" fill="#F2C879"/>
+          <circle cx="60" cy="92" r="11" fill="#04060B" stroke="#F2C879" stroke-width="3"/>
+          <circle cx="56" cy="88" r="3" fill="#9AA3B5" opacity=".7"/>
+          <path d="M34 150 L12 190 V206 L34 196 Z" fill="#F2C879"/>
+          <path d="M86 150 L108 190 V206 L86 196 Z" fill="#F2C879"/>
+          <path d="M56 160 H64 V200 H56 Z" fill="#B9C0CD"/>
+          <path d="M42 196 H78 L72 212 H48 Z" fill="#5A6475"/>
+          <text x="60" y="135" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#5A6475" letter-spacing="1">AF-27</text>
+        </g>
+      </g>
+    </svg>
+  </button>
+  <div class="pad-bottom">
+    <div class="cta">Tap the rocket to launch</div>
+    <p class="label" style="margin:10px 0 0">or <button class="skip" id="skip" type="button">skip to the file</button></p>
+  </div>
+</div>
+
+<header class="hud" aria-label="Mission clock">
+  <span>AF-27</span>
+  <span>T-minus Tokyo <b id="tminus">—</b></span>
+  <span class="wide">MAD <b id="mad">—</b></span>
+  <span class="wide">TYO <b id="tyo">—</b></span>
+  <span class="grow"></span>
+  <span>Lit <b id="lit">—</b></span>
+  <button type="button" id="tonight" aria-pressed="false">Tonight's Moon</button>
+</header>
+
+<main class="file" id="file">
+  <div class="col">
+    <header class="hero">
+      <div class="label rise d1">Mission file · Candidate for ispace, Tokyo</div>
+      <h1 class="rise d1" tabindex="-1" id="top">Aníbal Figueredo<span>.</span></h1>
+      <p class="lede rise d2">I'm a business student from Paraguay, living in Madrid, and I'd like to spend 2027 helping a company that keeps going back to the Moon.</p>
+      <div class="meta rise d3">
+        <span class="label">BBA · IE University</span>
+        <span class="label">Graduating 2028</span>
+        <span class="label">Tokyo from Feb 2027</span>
+      </div>
+    </header>
+
+    <div class="strip rise d3" role="list">
+      <div role="listitem"><span class="label">To Tokyo</span><b id="days">96</b><span class="label">days to 1 Feb 2027</span></div>
+      <div role="listitem"><span class="label">Planned stay</span><b>6+</b><span class="label">months, full-time</span></div>
+      <div role="listitem"><span class="label">Languages</span><b>3</b><span class="label">ES · EN · 日本語</span></div>
+      <div role="listitem"><span class="label">Paperwork</span><b>IE</b><span class="label">internship agreement</span></div>
+    </div>
+
+    <section>
+      <div class="label">00 · Why</div>
+      <h2>Most companies would have gone quiet.</h2>
+      <div class="prose">
+        <p>ispace lost a lander on the Moon and named the next one RESILIENCE. When that one was lost too, in June 2025, you said you would learn from it and kept building. Since then you've won MAGPIE with ESA and new work with JAXA.</p>
+        <p>I'm not an engineer, and I won't pretend to be one. What I can bring is the other half of the job: finding the people who need what you build, and following up until they say yes or a clear no. This page is my attempt at proving it by action.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="label">01 · Trajectory</div>
+      <h2>Three stops so far. The fourth is yours.</h2>
+      <svg class="arc" id="arc" viewBox="0 0 600 130" aria-hidden="true">
+        <path pathLength="1" d="M20 110 Q110 30 200 80"/>
+        <path pathLength="1" d="M200 80 Q300 20 400 86"/>
+        <path class="next" d="M400 86 Q500 10 560 26"/>
+        <circle class="dot" cx="20" cy="110" r="6"/>
+        <circle class="dot" cx="200" cy="80" r="6"/>
+        <circle class="dot next" cx="400" cy="86" r="6"/>
+        <circle class="moonmark" cx="566" cy="24" r="14"/>
+      </svg>
+      <div class="traj">
+        <div><small>25.26°S 57.58°W</small><h3>Asunción</h3><span class="label">Grew up · Blindesa</span></div>
+        <div><small>40.42°N 3.70°W</small><h3>Madrid</h3><span class="label">Since 2023 · IE</span></div>
+        <div><small>35.68°N 139.69°E</small><h3 style="color:var(--sun)">Tokyo</h3><span class="label">From Feb 2027</span></div>
+      </div>
+      <div class="legs">
+        <span>Asunción → Madrid <b>9,182 km</b></span>
+        <span>Madrid → Tokyo <b>10,762 km</b></span>
+        <span>Tokyo → Moon <b>384,400 km</b> (your part)</span>
+      </div>
+    </section>
+
+    <section>
+      <div class="label">02 · Mission log</div>
+      <h2>What I've built and sold.</h2>
+      <div class="log">
+        <article class="entry">
+          <div class="when">Jun 2026 – now</div>
+          <h3>LeadPilot</h3>
+          <div class="org">AI lead-qualification and booking assistant · <a href="https://github.com/Heilko/leadpilot">code ↗</a></div>
+          <p>A chat widget built on Claude that qualifies website visitors, scores them and books appointments, with an owner dashboard and a WhatsApp channel. Then I took it to dental clinics myself.</p>
+          <p class="result"><strong>32 cold calls</strong> in Madrid and <strong>9 visits</strong> in Asunción. 5 clinics interested, none reached a demo. The lesson was about follow-up.</p>
+        </article>
+        <article class="entry">
+          <div class="when">Sep 2026</div>
+          <h3>Catalogue scanner</h3>
+          <div class="org">Prospecting tool for an AI fashion-imagery startup · <a href="https://github.com/Heilko/catalogue-scanner">code ↗</a></div>
+          <p>Scans fashion e-commerce sites, flags brands still paying for traditional catalogue photography and estimates what they'd save in euros.</p>
+          <p class="result"><strong>36 of 70</strong> brands sized and ranked. Classifier checked by hand at <strong>68 of 69</strong>.</p>
+        </article>
+        <article class="entry">
+          <div class="when">Jul 2026</div>
+          <h3>Boutique Factory</h3>
+          <div class="org">Website generator for fashion retail · <a href="https://github.com/Heilko/boutique-factory">code ↗</a></div>
+          <p>Turns one brand file plus photography into a complete site with a headless-Shopify store: live stock, cart and checkout.</p>
+          <p class="result">Used it to build an on-spec demo for a menswear boutique in Barcelona.</p>
+        </article>
+        <article class="entry">
+          <div class="when">Jun – Sep 2025</div>
+          <h3>Blindesa S.A.</h3>
+          <div class="org">Technology Implementation Intern · law consultancy · Asunción</div>
+          <p>Led research into ERP and CRM solutions for the firm's clients, evaluated the major vendors and contacted them about a reseller partnership.</p>
+          <p class="result">Chose <strong>Odoo</strong> and prepared the recommendation for the firm to buy and resell it, reporting to the founder and CEO.</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <div class="label">03 · Telemetry</div>
+      <h2>Systems check.</h2>
+      <div class="tele">
+        <div><span class="label">Spanish</span>Native<span class="bar"><i style="width:100%"></i></span></div>
+        <div><span class="label">English</span>Bilingual<span class="bar"><i style="width:95%"></i></span></div>
+        <div><span class="label">Japanese</span>Basic conversation, studying every day<span class="bar"><i class="grow" style="width:25%"></i></span></div>
+        <div><span class="label">Certification</span>HubSpot Sales Hub Software, Sep 2026</div>
+        <div><span class="label">Tools</span>Claude API, Node.js, Python, Shopify, WhatsApp Cloud API, Excel</div>
+        <div><span class="label">Off duty</span>Club officer for a 500+ member outdoors club, guiding groups of 50+ across Spain</div>
+      </div>
+    </section>
+
+    <section>
+      <div class="label">04 · Comms</div>
+      <h2>Open channel.</h2>
+      <p class="prose" style="margin:0">I'm in Madrid and happy to take a call at Tokyo hours, or to come to Luxembourg.</p>
+      <div class="comms">
+        <span class="chip"><span>anibalflln@gmail.com</span><button type="button" data-copy="anibalflln@gmail.com">copy</button></span>
+        <span class="chip"><span>+34 632 919 360</span><button type="button" data-copy="+34632919360">copy</button></span>
+        <a class="chip" href="https://www.linkedin.com/in/anibal-figueredo">LinkedIn ↗</a>
+        <a class="chip" href="https://github.com/Heilko">GitHub ↗</a>
+      </div>
+    </section>
+
+    <footer>
+      <div class="row">
+        <span>Built by Aníbal with Claude, October 2026</span>
+        <button type="button" id="relaunch">Launch again</button>
+      </div>
+      <span>Moon: NASA's Scientific Visualization Studio, CGI Moon Kit (LRO / LROC data). Not affiliated with ispace, just a fan who'd like to join the crew.</span>
+    </footer>
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var body = document.body;
+  var launchEl = document.getElementById('launch');
+  var rocket = document.getElementById('rocket');
+  var countEl = document.getElementById('count');
+  var launchedAt = null, liftAt = null, launching = false;
+
+  /* ---------- Clocks ---------- */
+  var TARGET = Date.UTC(2027, 0, 31, 15, 0, 0); // 1 Feb 2027 00:00 in Tokyo
+  var fmt = function (tz) { return new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour: '2-digit', minute: '2-digit' }); };
+  var fMad = fmt('Europe/Madrid'), fTyo = fmt('Asia/Tokyo');
+  var pad = function (n) { return String(n).padStart(2, '0'); };
+  function tick() {
+    var now = Date.now(), s = Math.max(0, Math.floor((TARGET - now) / 1000));
+    var d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
+    document.getElementById('tminus').textContent = d + 'd ' + pad(h) + ':' + pad(m) + ':' + pad(s % 60);
+    document.getElementById('days').textContent = Math.ceil((TARGET - now) / 86400000);
+    document.getElementById('mad').textContent = fMad.format(now);
+    document.getElementById('tyo').textContent = fTyo.format(now);
+  }
+  tick(); setInterval(tick, 1000);
+
+  /* ---------- Tonight's real Moon ---------- */
+  var SYN = 29.530588853;
+  var age = (((Date.now() - Date.UTC(2000, 0, 6, 18, 14)) / 86400000) % SYN + SYN) % SYN;
+  var realPhase = age / SYN, realIllum = (1 - Math.cos(2 * Math.PI * realPhase)) / 2;
+  var NAMES = ['New Moon', 'Waxing crescent', 'First quarter', 'Waxing gibbous', 'Full Moon', 'Waning gibbous', 'Last quarter', 'Waning crescent'];
+  var realName = NAMES[Math.floor(realPhase * 8 + 0.5) % 8];
+  // sun angle from the viewer: 0 = full (sun behind us), pi = new. Waxing is lit from the right as seen from Madrid.
+  var realTheta = Math.acos(2 * realIllum - 1) * (realPhase < 0.5 ? 1 : -1);
+  var tonight = false;
+  var tBtn = document.getElementById('tonight');
+  tBtn.addEventListener('click', function () {
+    tonight = !tonight;
+    tBtn.setAttribute('aria-pressed', String(tonight));
+    tBtn.textContent = tonight ? realName + ' · tonight' : "Tonight's Moon";
+  });
+
+  /* ---------- Three.js Moon ---------- */
+  var canvas = document.getElementById('space');
+  var gl = null;
+  try {
+    if (!window.THREE) throw new Error('no three');
+    gl = initMoon();
+  } catch (e) {
+    canvas.hidden = true;
+    var fb = document.createElement('div'); fb.className = 'fallback-moon'; fb.setAttribute('aria-hidden', 'true');
+    document.body.insertBefore(fb, canvas);
+  }
+
+  function initMoon() {
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setClearColor(0x04060b, 1);
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(32, 1, 0.1, 200);
+    camera.position.set(0, 0, 9);
+
+    // stars
+    var N = 2600, pos = new Float32Array(N * 3), col = new Float32Array(N * 3);
+    for (var i = 0; i < N; i++) {
+      var u = Math.random() * 2 - 1, a = Math.random() * Math.PI * 2, r = 60 + Math.random() * 40, q = Math.sqrt(1 - u * u);
+      pos[i * 3] = r * q * Math.cos(a); pos[i * 3 + 1] = r * u; pos[i * 3 + 2] = r * q * Math.sin(a) - 20;
+      var w = 0.55 + Math.random() * 0.45, warm = Math.random() < 0.18;
+      col[i * 3] = w; col[i * 3 + 1] = w * (warm ? 0.9 : 0.96); col[i * 3 + 2] = w * (warm ? 0.75 : 1.05);
+    }
+    var sg = new THREE.BufferGeometry();
+    sg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    sg.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    var stars = new THREE.Points(sg, new THREE.PointsMaterial({ size: 1.4, sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0.9 }));
+    scene.add(stars);
+
+    // moon
+    var loader = new THREE.TextureLoader();
+    var map = loader.load('moon-4k.jpg');
+    map.encoding = THREE.sRGBEncoding;
+    map.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    var bump = loader.load('moon-height.jpg');
+    var mat = new THREE.MeshStandardMaterial({ map: map, bumpMap: bump, bumpScale: 0.035, roughness: 1, metalness: 0 });
+    var moon = new THREE.Mesh(new THREE.SphereGeometry(1.7, 160, 160), mat);
+    moon.rotation.y = -Math.PI / 2; // near side faces the camera
+    var pivot = new THREE.Group(); pivot.add(moon); scene.add(pivot);
+
+    var sun = new THREE.DirectionalLight(0xfff1dc, 2.4); scene.add(sun);
+    scene.add(new THREE.AmbientLight(0x2a3a5c, 0.07)); // earthshine
+
+    var mouse = { x: 0, y: 0 }, sm = { x: 0, y: 0 };
+    window.addEventListener('pointermove', function (e) { mouse.x = e.clientX / innerWidth - 0.5; mouse.y = e.clientY / innerHeight - 0.5; }, { passive: true });
+
+    var layout = { x: 2.2, y: 0, s: 1 };
+    function resize() {
+      var w = innerWidth, h = innerHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h; camera.updateProjectionMatrix();
+      if (w < 760) { layout = { x: 0, y: 1.25, s: 0.78 }; }
+      else { var span = Math.tan(camera.fov * Math.PI / 360) * camera.position.z * camera.aspect; layout = { x: Math.min(span * 0.52, 3.2), y: 0, s: 1 }; }
+    }
+    resize(); window.addEventListener('resize', resize);
+    return { renderer: renderer, scene: scene, camera: camera, moon: moon, pivot: pivot, sun: sun, stars: stars, mouse: mouse, sm: sm, getLayout: function () { return layout; } };
+  }
+
+  var theta = -1.7, progress = 0;
+  var litEl = document.getElementById('lit');
+  var ease = function (t) { return 1 - Math.pow(1 - Math.min(Math.max(t, 0), 1), 3); };
+  function frame(now) {
+    requestAnimationFrame(frame);
+    if (gl) {
+      var max = document.documentElement.scrollHeight - innerHeight;
+      var p = body.classList.contains('launched') && max > 0 ? scrollY / max : 0;
+      progress += (p - progress) * 0.08;
+      var target = tonight ? realTheta : -(1.7 - progress * 1.58); // lit from the left, half -> near full as the file is read
+      theta += (target - theta) * 0.06;
+      gl.sun.position.set(Math.sin(theta) * 10, 1.6, Math.cos(theta) * 10);
+      litEl.textContent = Math.round((1 + Math.cos(theta)) / 2 * 100) + '%';
+
+      var L = gl.getLayout();
+      var rise = launchedAt === null ? 0 : (reduce ? 1 : ease((now - launchedAt) / 2600));
+      gl.pivot.position.set(L.x, L.y - (1 - rise) * 6, 0);
+      var sc = L.s * (0.55 + 0.45 * rise) * (1 + progress * 0.12);
+      gl.pivot.scale.setScalar(sc);
+      gl.sm.x += (gl.mouse.x - gl.sm.x) * 0.04; gl.sm.y += (gl.mouse.y - gl.sm.y) * 0.04;
+      var spin = reduce ? 0 : now * 0.000012;
+      gl.moon.rotation.y = -Math.PI / 2 + progress * 0.9 + spin + gl.sm.x * 0.25;
+      gl.moon.rotation.x = gl.sm.y * 0.15;
+      gl.stars.rotation.y = gl.sm.x * -0.03 + (reduce ? 0 : now * 0.000004);
+      gl.stars.rotation.x = gl.sm.y * -0.02;
+      gl.renderer.render(gl.scene, gl.camera);
+    }
+    fx(now);
+    if (liftAt !== null && !reduce) {
+      var t = (now - liftAt) / 1000;
+      var y = -(40 * t + 620 * t * t);
+      rocket.style.transform = 'translate(-50%, ' + y + 'px)';
+    }
+  }
+  requestAnimationFrame(frame);
+
+  /* ---------- Exhaust particles ---------- */
+  var fxC = document.getElementById('fx'), fxX = fxC.getContext('2d'), parts = [], emit = 0, lastFx = 0;
+  function sizeFx() { var d = Math.min(devicePixelRatio || 1, 2); fxC.width = innerWidth * d; fxC.height = innerHeight * d; fxX.setTransform(d, 0, 0, d, 0, 0); }
+  sizeFx(); window.addEventListener('resize', sizeFx);
+  function nozzle() { var r = rocket.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height * (212 / 300) }; }
+  function fx(now) {
+    var dt = Math.min((now - (lastFx || now)) / 16.7, 3); lastFx = now;
+    if (launchEl.hidden) return;
+    var n = nozzle(), groundY = innerHeight * 0.83;
+    if (emit === 1) { // ignition: smoke rolls along the pad
+      for (var i = 0; i < 4; i++) parts.push({ x: n.x + (Math.random() - .5) * 20, y: groundY - 4, vx: (Math.random() < .5 ? -1 : 1) * (1.5 + Math.random() * 3.5), vy: -Math.random() * .8, r: 8 + Math.random() * 10, g: 1.012, life: 0, max: 90 + Math.random() * 60, fire: false });
+    } else if (emit === 2) {
+      for (var j = 0; j < 6; j++) parts.push({ x: n.x + (Math.random() - .5) * 10, y: n.y + 30, vx: (Math.random() - .5) * 2.2, vy: 3 + Math.random() * 3, r: 6 + Math.random() * 8, g: 1.02, life: 0, max: 70 + Math.random() * 50, fire: Math.random() < .35 });
+    }
+    fxX.clearRect(0, 0, innerWidth, innerHeight);
+    for (var k = parts.length - 1; k >= 0; k--) {
+      var p = parts[k];
+      p.life += dt; p.x += p.vx * dt; p.y += p.vy * dt; p.r *= Math.pow(p.g, dt);
+      if (p.y > groundY && p.vy > 0) { p.vy *= -0.15; p.vx += (Math.random() - .5) * 6; }
+      p.vx *= Math.pow(0.985, dt); p.vy *= Math.pow(0.97, dt);
+      var a = 1 - p.life / p.max;
+      if (a <= 0) { parts.splice(k, 1); continue; }
+      fxX.beginPath(); fxX.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      fxX.fillStyle = p.fire && p.life < 14 ? 'rgba(255,170,90,' + (a * .8) + ')' : 'rgba(200,204,214,' + (a * .22) + ')';
+      fxX.fill();
+    }
+    if (parts.length > 900) parts.splice(0, parts.length - 900);
+  }
+
+  /* ---------- Launch sequence ---------- */
+  function startLaunch() {
+    if (launching) return;
+    launching = true;
+    if (reduce) { reveal(); return; }
+    launchEl.classList.add('ignite'); emit = 1;
+    var n = 3;
+    var show = function (t) { countEl.textContent = t; countEl.classList.remove('pop'); void countEl.offsetWidth; countEl.classList.add('pop'); };
+    show(n);
+    var iv = setInterval(function () {
+      n--;
+      if (n > 0) { show(n); return; }
+      clearInterval(iv); show('Liftoff');
+      launchEl.classList.add('lift'); emit = 2; liftAt = performance.now();
+      setTimeout(function () { emit = 0; }, 1500);
+      setTimeout(reveal, 1050);
+    }, 650);
+  }
+  function reveal() {
+    launchedAt = performance.now();
+    body.classList.add('launched');
+    launchEl.classList.add('gone');
+    setTimeout(function () { launchEl.hidden = true; parts = []; }, 1100);
+    setTimeout(function () { document.getElementById('top').focus({ preventScroll: true }); }, 400);
+  }
+  function relaunch() {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+    body.classList.remove('launched');
+    launchEl.hidden = false;
+    launchEl.classList.remove('gone', 'ignite', 'lift');
+    rocket.style.transform = ''; countEl.textContent = '';
+    launchedAt = null; liftAt = null; launching = false; emit = 0; parts = []; tonight = false;
+    tBtn.setAttribute('aria-pressed', 'false'); tBtn.textContent = "Tonight's Moon";
+    // restart the entrance animations
+    document.querySelectorAll('.rise').forEach(function (el) { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; });
+    setTimeout(function () { rocket.focus(); }, 50);
+  }
+  rocket.addEventListener('click', startLaunch);
+  document.getElementById('skip').addEventListener('click', function () { launching = true; reveal(); });
+  document.getElementById('relaunch').addEventListener('click', relaunch);
+
+  /* ---------- Trajectory draw ---------- */
+  var arc = document.getElementById('arc');
+  if ('IntersectionObserver' in window && !reduce) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting && body.classList.contains('launched')) { arc.classList.remove('draw'); void arc.getBoundingClientRect(); arc.classList.add('draw'); io.disconnect(); } });
+    }, { threshold: 0.6 });
+    io.observe(arc);
+  }
+
+  /* ---------- Copy buttons ---------- */
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var t = b.getAttribute('data-copy');
+      var done = function () { b.textContent = 'copied'; setTimeout(function () { b.textContent = 'copy'; }, 1500); };
+      var sel = function () { var r = document.createRange(); r.selectNodeContents(b.previousElementSibling); var s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, sel); else sel();
+    });
+  });
+})();
+</script>
+</body>
+</html>
