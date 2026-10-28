@@ -74,7 +74,7 @@ body.launched .veil { opacity: 1; }
 /* HUD */
 .hud { position: fixed; top: 0; left: 0; right: 0; z-index: 10; display: flex; align-items: center; gap: 8px 22px; flex-wrap: wrap;
   padding: calc(env(safe-area-inset-top, 0px) + 12px) max(16px, env(safe-area-inset-right, 0px)) 12px max(16px, env(safe-area-inset-left, 0px));
-  background: linear-gradient(180deg, rgba(4,6,11,.92), rgba(4,6,11,0)); font-family: var(--mono); font-size: 12px; letter-spacing: .08em; color: var(--muted);
+  background: linear-gradient(180deg, rgba(4,6,11,.97) 0%, rgba(4,6,11,.97) 70%, rgba(4,6,11,0) 100%); padding-bottom: 22px; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; color: var(--muted);
   opacity: 0; transform: translateY(-8px); transition: opacity .8s ease 1.4s, transform .8s ease 1.4s; pointer-events: none; }
 body.launched .hud { opacity: 1; transform: none; pointer-events: auto; }
 .hud b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
